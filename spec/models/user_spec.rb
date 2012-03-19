@@ -22,9 +22,11 @@ describe User do
 	it { should respond_to(:password) }
 	it { should respond_to(:password_confirmation) }
 	it { should respond_to(:remember_token) }
+	it { should respond_to(:admin) }
 	it { should respond_to(:authenticate) }
 
 	it { should be_valid }
+	it { should_not be_admin }
 
 	describe "when name is not present" do
 		before { @user.name = " " }
@@ -81,7 +83,7 @@ describe User do
   		it { should_not be_valid }
   	end
 
-  	describe "return value of authenticate method" do
+  	describe "various authenticate scenarios" do
   		before { @user.save }
   		let(:found_user) { User.find_by_email(@user.email) }
 
@@ -96,7 +98,7 @@ describe User do
   		end
   	end
 
-  	describe "with a password that is too short" do
+  	describe "logging in with a password that is too short" do
   		before { @user.password = @user.password_confirmation = "a" * 5 }
   		it { should be_invalid }
   	end
@@ -104,6 +106,11 @@ describe User do
   	describe "remember token" do
   		before { @user.save }
   		its(:remember_token) { should_not be_blank}
+	end
+
+	describe "when the user is an admin" do
+		before { @user.toggle!(:admin) }
+		it { should be_admin }
 	end
 
 end
