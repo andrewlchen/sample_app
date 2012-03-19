@@ -7,8 +7,15 @@ describe "Authentication" do
 	describe "signin process" do
 		before { visit signin_path }
 
-		it { should have_selector('h1', 	text: 'Sign In') }
-		it { should have_selector('title',	text: 'Sign In') }
+		it { should have_selector('h1',       text: 'Sign In') }
+		it { should have_selector('title',    text: 'Sign In') }
+        
+        describe "should not see profile and settings links when not signed in" do
+            let(:user) { FactoryGirl.create(:user) }
+
+            it { should_not have_link('Profile',    href: user_path(user)) }
+            it { should_not have_link('Settings',   href: edit_user_path(user)) }
+        end
 
 		describe "sign in with invalid credentials" do
 			before { click_button "Sign In" }
@@ -24,16 +31,19 @@ describe "Authentication" do
 
 		describe "sign in with valid credentials" do
 			let(:user) { FactoryGirl.create(:user) }
-			before do 
-				fill_in "E-mail", 	with: user.email
-				fill_in "Password", with: user.password
-				click_button "Sign In"
-			end
+			before { sign_in user }
 
 			it { should have_selector('title', 		text: user.name) }
 			it { should have_link('Profile', 		href: user_path(user)) }
 			it { should have_link('Sign Out', 		href: signout_path) }
 			it { should_not have_link('Sign In', 	href: signin_path) }
+
+            describe "signed in users have no reason to access NEW and CREATE actions in Users controller" do
+                before { get new_user_path }
+                specify { response.should redirect_to(root_path) }
+                before { post users_path }
+                specify { response.should redirect_to(root_path) }
+            end
 
 			describe "followed by signout" do
 				before { click_link "Sign Out" }
@@ -66,12 +76,8 @@ describe "Authentication" do
     			end
 
     			describe "redirect to protected edit user page AFTER you validly sign in" do
-    				before do
-    					visit edit_user_path(user)
-    					fill_in "E-mail", 		with: user.email
-    					fill_in "Password", 	with: user.password
-    					click_button "Sign In"
-    				end
+    				before { visit edit_user_path(user) }
+                    before { sign_in user }
 
     				it { should have_selector('title', 		text: "Edit User") }
 
