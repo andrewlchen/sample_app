@@ -12,9 +12,11 @@ gem 'bootstrap-will_paginate', '0.0.5'
 
 group :development, :test do
   gem 'sqlite3',              '1.3.5'
+  gem 'annotate',             '~> 2.4.1.beta'
   gem 'rspec-rails',          '2.8.1'
   gem 'guard-rspec',          '0.5.5'
-  gem 'annotate',             '~> 2.4.1.beta'
+  gem 'guard-spork',          '0.3.2'
+  gem 'spork',                '0.9.0'
 end
 
 
@@ -33,13 +35,12 @@ end
 gem 'jquery-rails',           '2.0.0'
 
 group :test do
-  gem 'rspec-rails',          '2.8.1'
+  #gem 'rspec-rails',          '2.8.1'
   gem 'capybara',             '1.1.2'
+  gem 'factory_girl_rails',   '1.4.0'
+  gem 'database_cleaner',     '0.7.0'
   gem 'rb-fsevent',           '0.4.3.1', :require => false
   gem 'growl',                '1.0.3'
-  gem 'guard-spork',          '0.3.2'
-  gem 'spork',                '0.9.0'
-  gem 'factory_girl_rails',   '1.4.0'
 end
 
 group :production do
