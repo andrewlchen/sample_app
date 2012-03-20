@@ -92,6 +92,20 @@ describe "Authentication" do
     				before { visit users_path }
     				it { should have_selector('title', 		text: 'Sign In') }
     			end
+
+                describe "when non-signed in user tries to CREATE micropost" do
+                    before { post microposts_path }
+                    specify { response.should redirect_to(signin_path) } 
+                end
+
+                describe "when non-signed in user tries to DESTROY micropost" do
+                    before do 
+                        micropost = FactoryGirl.create(:micropost)
+                        delete micropost_path(:micropost)
+                    end
+                    
+                    specify { response.should redirect_to(signin_path) } 
+                end
     		end
     	end
 

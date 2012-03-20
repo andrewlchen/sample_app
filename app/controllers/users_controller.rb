@@ -14,6 +14,7 @@
 
   def show
   	@user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def create
@@ -56,13 +57,6 @@
   end
 
   private
-
-    def signed_in_user
-      unless signed_in?
-        store_location
-        redirect_to signin_path, notice: "Please sign in first." unless signed_in?
-      end
-    end
 
     def correct_user
       @user = User.find(params[:id])
